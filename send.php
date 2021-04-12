@@ -52,18 +52,26 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
       $param_sender = $_SESSION["id"];
       $param_receiver = $receiver;
       $param_amount = $amount;
-      $param_rem_balance = $balance - $amount;
+       if(date("h")>=8 && date("a")=='am'){
+            $param_rem_balance = $balance - (0.1*$amount);
+          }
+            elseif(date("h")>=12 && date("a")=="pm" ){
+              $param_rem_balance = $balance - (0.1*$amount);
+            }else{
+            $param_rem_balance = $balance - $amount;
+            }
+       
 
       if($stmt->execute()){
        header("location: welcome.php");
         if($stmt2 = $mysqli->prepare($sql2)){
           $stmt2->bind_param("dd", $param_balance, $param_sender);
           $discount = 0;
-          if(date("h")<=8 && date("a")=='pm'){
-            $param_balance = $balance - ($amount-$amount*0.1);
+          if(date("h")>=8 && date("a")=='am'){
+            $param_balance = $balance - (0.1*$amount);
           }
-            elseif(date("h")<=12 && date("a")=="am" ){
-              $param_balance = $balance - ($amount-$amount*0.1);
+            elseif(date("h")>=12 && date("a")=="pm" ){
+              $param_balance = $balance - (0.1*$amount);
             }else{
             $param_balance = $balance - $amount;
             }
